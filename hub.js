@@ -21,6 +21,12 @@ search.addEventListener('keydown', (e) => {
         e.preventDefault();
         const button = document.querySelector('#open');
         button.click();
+    } else if (e.key == "ArrowUp") {
+        e.preventDefault();
+        document.querySelector('.selection').nextElementSibling?.click()
+    } else if (e.key == "ArrowDown") {
+        e.preventDefault()
+        document.querySelector('.selection').previousElementSibling?.click()
     }
 })
 
