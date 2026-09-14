@@ -8,6 +8,7 @@ It is made entirely in browser JS, meaning that all you need is a web server.
 ## Features
 - Search
 - Favorite service on right click
+- Use up and down arrow keys to cycle throug search results
 - Launchs the service on enter
 
 ## Configuration
