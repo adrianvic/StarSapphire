@@ -103,6 +103,10 @@ button {
     transition: .1s;
 }
 
+.favorite {
+    white-space: nowrap;
+}
+
 .favorite::before {
     content: "*";
     display: inline-block;
