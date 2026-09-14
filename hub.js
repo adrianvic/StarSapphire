@@ -37,8 +37,16 @@ function reload() {
     results.innerHTML = '';
     selected.innerHTML = '';
     
-    const filtered = services.filter(a => a.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1)
-
+    const favorites = JSON.parse(localStorage.getItem('favorites') ?? "[]");
+    let filtered = services.filter(a => a.name.toLowerCase().indexOf(search.value.toLowerCase()) !== -1)
+    
+    filtered = filtered.sort((a, b) => {
+        const aIsFavorite = favorites.includes(a.name);
+        const bIsFavorite = favorites.includes(b.name);
+        
+        return Number(bIsFavorite) - Number(aIsFavorite);
+    });
+    
     if (filtered.length === 0) {
         results.innerText = "Nothing here"
         return;
@@ -46,22 +54,44 @@ function reload() {
     
     filtered.forEach(s => {
         const el = document.createElement('div');
+        
         el.classList.add('service');
         el.innerText = s.name;
         el.dataset.name = s.name;
+        
+        if (favorites.indexOf(s.name) !== -1) el.classList.add('favorite');
+        
         el.addEventListener('click', () => {
             select(s);
         })
         
+        el.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            favorite(s.name);
+        })
+        
         results.appendChild(el)
     });
-
+    
     select(filtered[0]);
+}
+
+function favorite(name) {
+    const favorites = JSON.parse(localStorage.getItem('favorites') ?? "[]");
+    
+    if (favorites.indexOf(name) !== -1) {
+        favorites.splice(favorites.indexOf(name), 1);
+    } else {
+        favorites.push(name);
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    reload();
 }
 
 function select(selection) {
     document.querySelectorAll('.selection').forEach(s => s.classList.remove('selection'));
-
+    
     selected.innerHTML = `
     <img src="./logos/${selection.logo}"
         style='
@@ -74,13 +104,13 @@ function select(selection) {
         ${selection.link ? `<a href="${selection.link}"><button id="open">Open</button></a>` : ''}
     </div>
     `
-
+    
     selected.querySelector('#open')?.addEventListener('click', async (e) => {
         e.preventDefault();
         await die();
         window.location.href = selection.link;
     });
-
+    
     const sel = document.querySelector(`[data-name="${selection.name}"]`);
     if (sel) sel.classList.add('selection');
 }
