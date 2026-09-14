@@ -16,19 +16,40 @@ services.forEach(s => {
     if (s.logo) preloadImage(s.logo);
 })
 
-search.addEventListener('keydown', (e) => {
-    if (e.key == "Enter") {
+search.addEventListener("keydown", (e) => {
+    const selected = document.querySelector(".selection");
+    
+    if (e.key === "Enter") {
         e.preventDefault();
-        const button = document.querySelector('#open');
-        button.click();
-    } else if (e.key == "ArrowUp") {
-        e.preventDefault();
-        document.querySelector('.selection').nextElementSibling?.click()
-    } else if (e.key == "ArrowDown") {
-        e.preventDefault()
-        document.querySelector('.selection').previousElementSibling?.click()
+        document.querySelector("#open")?.click();
+        return;
     }
-})
+    
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const previous = selected?.previousElementSibling;
+        
+        if (previous) {
+            previous.click();
+        } else {
+            results.lastElementChild?.click();
+        }
+        
+        return;
+    }
+    
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const next = selected?.nextElementSibling;
+        
+        if (next) {
+            next.click();
+        } else {
+            results.firstElementChild?.click();
+        }
+    }
+});
+
 
 search.addEventListener('input', (e) => {
     window.location.hash = search.value;
